@@ -1,0 +1,53 @@
+plugins {
+    id 'java'
+    id 'maven-publish'
+    id 'signing'
+}
+
+group 'io.github.brawaru'
+version '1.0.6-SNAPSHOT'
+
+sourceCompatibility = '1.8'
+targetCompatibility = '1.8'
+
+java {
+    withSourcesJar()
+    withJavadocJar()
+}
+
+repositories {
+    mavenLocal()
+
+    mavenCentral()
+
+    maven {
+        name = 'spigotmc-repo'
+        url = 'https://hub.spigotmc.org/nexus/content/repositories/snapshots/'
+    }
+}
+
+dependencies {
+    compileOnly group: 'org.spigotmc', name: 'spigot-api', version: '1.16.4-R0.1-SNAPSHOT'
+    compileOnly group: 'org.jetbrains', name: 'annotations', version: '20.1.0'
+}
+
+publishing {
+    repositories {
+        mavenLocal()
+
+        maven {
+            name = "GitHubPackages"
+            url = uri("https://maven.pkg.github.com/Brawaru/Componential")
+            credentials {
+                username = project.findProperty('gpr.user') ?: System.getenv('GPR_USERNAME')
+                password = project.findProperty('gpr.token') ?: System.getenv('GPR_TOKEN')
+            }
+        }
+    }
+
+    publications {
+        mavenJava(MavenPublication) {
+            from components.java
+        }
+    }
+}
